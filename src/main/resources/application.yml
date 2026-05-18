@@ -1,0 +1,15 @@
+bot:
+  github:
+    owner: ${REPO_OWNER}
+    repo: ${REPO_NAME}
+    token: ${GITHUB_TOKEN}
+  dry-run: ${DRY_RUN:true}
+  discord:
+    enabled: ${DISCORD_ENABLED:false}
+    webhook-url: ${DISCORD_WEBHOOK_URL:}
+
+spring:
+  application:
+    name: atcoder-cf-study-pr-bot
+  main:
+    web-application-type: none

@@ -1,0 +1,37 @@
+name: PR Guardian Bot
+
+on:
+  schedule:
+    - cron: "0 10 * * 5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without comments/merge/discord"
+        required: false
+        default: "true"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - run: chmod +x ./gradlew
+      - run: ./gradlew build
+      - run: ./gradlew bootRun
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          DISCORD_ENABLED: ${{ vars.DISCORD_ENABLED || 'false' }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
